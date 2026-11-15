@@ -1,0 +1,5 @@
+# maze-embassy. maze-blocking lives in wokwi-blocking/wokwi.toml.
+[wokwi]
+version = 1
+elf = "target/xtensa-esp32s3-none-elf/release/maze-embassy"
+firmware = "target/xtensa-esp32s3-none-elf/release/maze-embassy"

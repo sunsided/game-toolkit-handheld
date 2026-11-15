@@ -1,0 +1,228 @@
+{
+  "version": 1,
+  "author": "game-toolkit-handheld",
+  "editor": "wokwi",
+  "parts": [
+    {
+      "type": "board-esp32-s3-devkitc-1",
+      "id": "esp",
+      "top": 0,
+      "left": 0,
+      "attrs": {
+        "flashSize": "16"
+      }
+    },
+    {
+      "type": "wokwi-ili9341",
+      "id": "lcd1",
+      "top": -80,
+      "left": 260,
+      "rotate": 90,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-pushbutton",
+      "id": "btn_up",
+      "top": 260,
+      "left": -150,
+      "attrs": {
+        "color": "green",
+        "label": "Up",
+        "key": "ArrowUp"
+      }
+    },
+    {
+      "type": "wokwi-pushbutton",
+      "id": "btn_down",
+      "top": 260,
+      "left": -40,
+      "attrs": {
+        "color": "green",
+        "label": "Down",
+        "key": "ArrowDown"
+      }
+    },
+    {
+      "type": "wokwi-pushbutton",
+      "id": "btn_left",
+      "top": 260,
+      "left": 70,
+      "attrs": {
+        "color": "green",
+        "label": "Left",
+        "key": "ArrowLeft"
+      }
+    },
+    {
+      "type": "wokwi-pushbutton",
+      "id": "btn_right",
+      "top": 330,
+      "left": -150,
+      "attrs": {
+        "color": "green",
+        "label": "Right",
+        "key": "ArrowRight"
+      }
+    },
+    {
+      "type": "wokwi-pushbutton",
+      "id": "btn_a",
+      "top": 330,
+      "left": -40,
+      "attrs": {
+        "color": "red",
+        "label": "A",
+        "key": "a"
+      }
+    },
+    {
+      "type": "wokwi-pushbutton",
+      "id": "btn_b",
+      "top": 330,
+      "left": 70,
+      "attrs": {
+        "color": "red",
+        "label": "B",
+        "key": "b"
+      }
+    }
+  ],
+  "connections": [
+    [
+      "esp:TX",
+      "$serialMonitor:RX",
+      "",
+      []
+    ],
+    [
+      "esp:RX",
+      "$serialMonitor:TX",
+      "",
+      []
+    ],
+    [
+      "lcd1:VCC",
+      "esp:3V3.1",
+      "red",
+      []
+    ],
+    [
+      "lcd1:GND",
+      "esp:GND.1",
+      "black",
+      []
+    ],
+    [
+      "lcd1:CS",
+      "esp:10",
+      "orange",
+      []
+    ],
+    [
+      "lcd1:RST",
+      "esp:8",
+      "purple",
+      []
+    ],
+    [
+      "lcd1:D/C",
+      "esp:9",
+      "yellow",
+      []
+    ],
+    [
+      "lcd1:MOSI",
+      "esp:11",
+      "green",
+      []
+    ],
+    [
+      "lcd1:SCK",
+      "esp:12",
+      "blue",
+      []
+    ],
+    [
+      "lcd1:LED",
+      "esp:3V3.1",
+      "red",
+      []
+    ],
+    [
+      "btn_up:1.l",
+      "esp:4",
+      "green",
+      []
+    ],
+    [
+      "btn_up:2.r",
+      "esp:GND.2",
+      "black",
+      []
+    ],
+    [
+      "btn_down:1.l",
+      "esp:5",
+      "green",
+      []
+    ],
+    [
+      "btn_down:2.r",
+      "esp:GND.2",
+      "black",
+      []
+    ],
+    [
+      "btn_left:1.l",
+      "esp:6",
+      "green",
+      []
+    ],
+    [
+      "btn_left:2.r",
+      "esp:GND.2",
+      "black",
+      []
+    ],
+    [
+      "btn_right:1.l",
+      "esp:7",
+      "green",
+      []
+    ],
+    [
+      "btn_right:2.r",
+      "esp:GND.2",
+      "black",
+      []
+    ],
+    [
+      "btn_a:1.l",
+      "esp:15",
+      "green",
+      []
+    ],
+    [
+      "btn_a:2.r",
+      "esp:GND.2",
+      "black",
+      []
+    ],
+    [
+      "btn_b:1.l",
+      "esp:16",
+      "green",
+      []
+    ],
+    [
+      "btn_b:2.r",
+      "esp:GND.2",
+      "black",
+      []
+    ]
+  ],
+  "serialMonitor": {
+    "display": "terminal",
+    "convertEol": true
+  }
+}

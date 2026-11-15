@@ -1,0 +1,66 @@
+[package]
+name = "board-esp32s3"
+description = "ESP32-S3 + ILI9341 backend for game-toolkit-handheld"
+version = "0.1.0"
+edition = "2024"
+license = "EUPL-1.2"
+publish = false
+
+# Own toolchain (espup `esp` channel) and target; keep it out of the root workspace.
+[workspace]
+
+[[bin]]
+name = "maze-embassy"
+path = "src/bin/maze_embassy.rs"
+test = false
+bench = false
+
+[[bin]]
+name = "maze-blocking"
+path = "src/bin/maze_blocking.rs"
+test = false
+bench = false
+
+[lib]
+test = false
+bench = false
+
+[dependencies]
+game-toolkit-handheld = { path = "../../crates/handheld" }
+game-toolkit-handheld-demos = { path = "../../crates/demos" }
+
+esp-hal = { version = "~1.2.2", features = ["esp32s3", "unstable"] }
+# esp-rtos replaced esp-hal-embassy for esp-hal 1.x; it is the Embassy time driver + executor glue.
+esp-rtos = { version = "0.4.0", features = ["embassy", "esp32s3"] }
+esp-bootloader-esp-idf = { version = "0.6.0", features = ["esp32s3"] }
+esp-backtrace = { version = "0.20.0", features = ["esp32s3", "panic-handler", "println"] }
+esp-println = { version = "0.18.0", features = ["esp32s3"] }
+embassy-executor = "0.10.0"
+embassy-time = "0.5.0"
+embedded-hal-bus = "0.3"
+mipidsi = "0.10"
+static_cell = "2.1"
+
+[profile.dev]
+opt-level = "s"
+
+[profile.release]
+codegen-units = 1
+debug = 2
+lto = "fat"
+opt-level = "s"
+
+# Copied from the root workspace's [workspace.lints].
+[lints.rust]
+unsafe_code = "forbid"
+missing_docs = "warn"
+rust_2018_idioms = { level = "warn", priority = -1 }
+unused_qualifications = "warn"
+
+[lints.clippy]
+dbg_macro = "warn"
+todo = "warn"
+manual_let_else = "warn"
+redundant_closure_for_method_calls = "warn"
+semicolon_if_nothing_returned = "warn"
+uninlined_format_args = "warn"
