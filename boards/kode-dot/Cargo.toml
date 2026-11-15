@@ -16,15 +16,18 @@ name = "board-kode-dot"
 harness = false # no test harness on the device
 
 [features]
-## Run in Wokwi's ESP32-P4: an ILI9341 SPI panel and GPIO push buttons instead of the CO5300
-## AMOLED and the TCA6408A expander.
+## Run in Wokwi's ESP32-P4: an ILI9341 SPI panel instead of the CO5300 AMOLED. The TCA6408A
+## and CST820 run as Wokwi custom chips.
 wokwi = []
 
 [dependencies]
 game-toolkit-handheld = { path = "../../crates/handheld" }
 game-toolkit-handheld-demos = { path = "../../crates/demos" }
+cst820 = "0.2"
+embedded-hal = "1.0"
 esp-idf-svc = "0.53"
 log = "0.4"
+tca6408a = "0.1"
 
 [build-dependencies]
 embuild = "0.33"

@@ -19,63 +19,93 @@
       "attrs": {}
     },
     {
-      "type": "wokwi-pushbutton",
-      "id": "btn_up",
+      "type": "chip-tca6408a",
+      "id": "io",
       "top": 300,
       "left": 200,
-      "attrs": {
-        "color": "blue",
-        "label": "Up"
-      }
+      "attrs": {}
     },
     {
-      "type": "wokwi-pushbutton",
-      "id": "btn_down",
+      "type": "chip-cst820",
+      "id": "touch",
       "top": 300,
-      "left": 290,
-      "attrs": {
-        "color": "blue",
-        "label": "Down"
-      }
+      "left": 480,
+      "attrs": {}
     },
     {
-      "type": "wokwi-pushbutton",
-      "id": "btn_left",
-      "top": 300,
+      "type": "wokwi-led",
+      "id": "vci_en",
+      "top": 250,
       "left": 380,
       "attrs": {
-        "color": "blue",
-        "label": "Left"
-      }
-    },
-    {
-      "type": "wokwi-pushbutton",
-      "id": "btn_right",
-      "top": 370,
-      "left": 200,
-      "attrs": {
-        "color": "blue",
-        "label": "Right"
-      }
-    },
-    {
-      "type": "wokwi-pushbutton",
-      "id": "btn_a",
-      "top": 370,
-      "left": 290,
-      "attrs": {
         "color": "green",
-        "label": "A (TOP)"
+        "label": "VCI_EN"
       }
     },
     {
       "type": "wokwi-pushbutton",
       "id": "btn_b",
-      "top": 370,
-      "left": 380,
+      "top": 470,
+      "left": 200,
       "attrs": {
         "color": "red",
-        "label": "B (BOT)"
+        "label": "B (BOT)",
+        "bounce": "0"
+      }
+    },
+    {
+      "type": "wokwi-pushbutton",
+      "id": "btn_up",
+      "top": 470,
+      "left": 290,
+      "attrs": {
+        "color": "blue",
+        "label": "Up",
+        "bounce": "0"
+      }
+    },
+    {
+      "type": "wokwi-pushbutton",
+      "id": "btn_left",
+      "top": 470,
+      "left": 380,
+      "attrs": {
+        "color": "blue",
+        "label": "Left",
+        "bounce": "0"
+      }
+    },
+    {
+      "type": "wokwi-pushbutton",
+      "id": "btn_down",
+      "top": 540,
+      "left": 200,
+      "attrs": {
+        "color": "blue",
+        "label": "Down",
+        "bounce": "0"
+      }
+    },
+    {
+      "type": "wokwi-pushbutton",
+      "id": "btn_right",
+      "top": 540,
+      "left": 290,
+      "attrs": {
+        "color": "blue",
+        "label": "Right",
+        "bounce": "0"
+      }
+    },
+    {
+      "type": "wokwi-pushbutton",
+      "id": "btn_a",
+      "top": 540,
+      "left": 380,
+      "attrs": {
+        "color": "green",
+        "label": "A (TOP)",
+        "bounce": "0"
       }
     }
   ],
@@ -141,51 +171,105 @@
       []
     ],
     [
+      "io:VCCI",
+      "esp:3V3",
+      "red",
+      []
+    ],
+    [
+      "io:VCCP",
+      "esp:3V3",
+      "red",
+      []
+    ],
+    [
+      "io:GND",
+      "esp:GND.2",
+      "black",
+      []
+    ],
+    [
+      "io:SDA",
+      "esp:4",
+      "green",
+      []
+    ],
+    [
+      "io:SCL",
+      "esp:5",
+      "blue",
+      []
+    ],
+    [
+      "touch:VCC",
+      "esp:3V3",
+      "red",
+      []
+    ],
+    [
+      "touch:GND",
+      "esp:GND.2",
+      "black",
+      []
+    ],
+    [
+      "touch:SDA",
+      "esp:4",
+      "green",
+      []
+    ],
+    [
+      "touch:SCL",
+      "esp:5",
+      "blue",
+      []
+    ],
+    [
+      "touch:RST",
+      "esp:7",
+      "orange",
+      []
+    ],
+    [
+      "vci_en:A",
+      "io:P7",
+      "green",
+      []
+    ],
+    [
+      "vci_en:C",
+      "esp:GND.2",
+      "black",
+      []
+    ],
+    [
+      "btn_b:1.l",
+      "io:P0",
+      "blue",
+      []
+    ],
+    [
       "btn_up:1.l",
-      "esp:20",
+      "io:P1",
       "blue",
-      []
-    ],
-    [
-      "btn_up:2.l",
-      "esp:GND.2",
-      "black",
-      []
-    ],
-    [
-      "btn_down:1.l",
-      "esp:21",
-      "blue",
-      []
-    ],
-    [
-      "btn_down:2.l",
-      "esp:GND.2",
-      "black",
       []
     ],
     [
       "btn_left:1.l",
-      "esp:22",
+      "io:P2",
       "blue",
       []
     ],
     [
-      "btn_left:2.l",
-      "esp:GND.2",
-      "black",
+      "btn_down:1.l",
+      "io:P3",
+      "blue",
       []
     ],
     [
       "btn_right:1.l",
-      "esp:23",
+      "io:P4",
       "blue",
-      []
-    ],
-    [
-      "btn_right:2.l",
-      "esp:GND.2",
-      "black",
       []
     ],
     [
@@ -195,19 +279,37 @@
       []
     ],
     [
-      "btn_a:2.l",
+      "btn_b:2.l",
       "esp:GND.2",
       "black",
       []
     ],
     [
-      "btn_b:1.l",
-      "esp:33",
-      "blue",
+      "btn_up:2.l",
+      "esp:GND.2",
+      "black",
       []
     ],
     [
-      "btn_b:2.l",
+      "btn_left:2.l",
+      "esp:GND.2",
+      "black",
+      []
+    ],
+    [
+      "btn_down:2.l",
+      "esp:GND.2",
+      "black",
+      []
+    ],
+    [
+      "btn_right:2.l",
+      "esp:GND.2",
+      "black",
+      []
+    ],
+    [
+      "btn_a:2.l",
       "esp:GND.2",
       "black",
       []

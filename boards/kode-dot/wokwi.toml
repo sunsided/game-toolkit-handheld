@@ -3,3 +3,12 @@ version = 1
 # Merged image (bootloader + partition table + app) from `espflash save-image --merge`.
 firmware = "target/wokwi/riscv32imafc-esp-espidf/release/board-kode-dot-wokwi.bin"
 elf = "target/wokwi/riscv32imafc-esp-espidf/release/board-kode-dot"
+
+# Custom chips from the driver crates' GitHub releases, fetched by `task kode:wokwi`.
+[[chip]]
+name = "tca6408a"
+binary = "target/chips/tca6408a.chip.wasm"
+
+[[chip]]
+name = "cst820"
+binary = "target/chips/cst820.chip.wasm"

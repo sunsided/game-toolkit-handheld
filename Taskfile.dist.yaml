@@ -183,12 +183,28 @@ tasks:
     env:
       CARGO_TARGET_DIR: target/wokwi
       ESP_IDF_SDKCONFIG_DEFAULTS: sdkconfig.defaults;sdkconfig.wokwi
+    deps: [kode:wokwi:chips]
     vars:
       OUT: target/wokwi/riscv32imafc-esp-espidf/release
     cmds:
       - cargo build --release --features wokwi
       - espflash save-image --chip esp32p4 --merge --bootloader {{.OUT}}/build/bootloader.bin --partition-table {{.OUT}}/build/partition-table.bin {{.OUT}}/board-kode-dot {{.OUT}}/board-kode-dot-wokwi.bin
       - wokwi-cli --timeout 20000 --timeout-exit-code 0 --screenshot-part lcd --screenshot-time 19000 --screenshot-file target/wokwi.png --serial-log-file target/wokwi-serial.log .
+
+  kode:wokwi:chips:
+    desc: Fetch the TCA6408A and CST820 Wokwi chips from their GitHub releases into boards/kode-dot/target/chips
+    internal: true
+    dir: boards/kode-dot/target/chips
+    vars:
+      CHIPS: tca6408a@v0.1.0 cst820@v0.2.2
+    status:
+      - test -f tca6408a.chip.wasm -a -f cst820.chip.wasm
+    cmds:
+      - for: { var: CHIPS, split: " " }
+        cmd: |
+          name={{splitList "@" .ITEM | first}}; tag={{splitList "@" .ITEM | last}}
+          curl -fsSL -o $name.zip https://github.com/sunsided/$name/releases/download/$tag/chip.zip
+          unzip -oq $name.zip && mv chip.json $name.chip.json && mv chip.wasm $name.chip.wasm && rm $name.zip
 
   kode:flash:
     desc: Write the app into the Kode Dot's app_pending mailbox (0x1A00000); kodeOS adopts it on next boot

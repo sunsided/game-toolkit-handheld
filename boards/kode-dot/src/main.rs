@@ -2,7 +2,8 @@
 //!
 //! The game loop runs in its own std thread on FreeRTOS. Default build: the CO5300 AMOLED over
 //! MIPI-DSI, the D-pad and BOT on the TCA6408A expander, TOP on GPIO35, CST820 touch. With the
-//! `wokwi` feature: an ILI9341 SPI panel and plain GPIO buttons in Wokwi's ESP32-P4 instead.
+//! `wokwi` feature: an ILI9341 SPI panel in Wokwi's ESP32-P4 instead, with the expander and touch
+//! controller as Wokwi custom chips on the same pins.
 //!
 //! No sound: the Kode Dot's speaker amp is enabled from the ESP32-C5 co-processor.
 #![deny(unsafe_code)]
@@ -16,6 +17,7 @@ use esp_idf_svc::{
 use game_toolkit_handheld::{FrameClock, HandheldGame, Input};
 use game_toolkit_handheld_demos::Maze;
 
+mod controls;
 #[cfg(not(feature = "wokwi"))]
 mod ffi;
 #[cfg(not(feature = "wokwi"))]

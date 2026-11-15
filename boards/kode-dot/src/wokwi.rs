@@ -1,11 +1,12 @@
-//! Wokwi stand-in: Wokwi has no CO5300 or TCA6408A, so an ILI9341 on SPI2 shows a 320x240
-//! screen and six push buttons sit on plain GPIOs (wiring in `diagram.json`).
+//! Wokwi stand-in: Wokwi has no CO5300, so an ILI9341 on SPI2 shows a 320x240 screen. Buttons
+//! and touch run on the TCA6408A and CST820 custom chips, wired like the real board
+//! (`diagram.json`).
 
 use std::{thread::sleep, time::Duration};
 
 use esp_idf_svc::{
     hal::{
-        gpio::{self, AnyIOPin, PinDriver, Pull},
+        gpio::{self, AnyIOPin, PinDriver},
         peripherals::Peripherals,
         spi::{SpiDeviceDriver, SpiDriver, SpiDriverConfig, config::Config},
         units::FromValueType,
@@ -13,8 +14,10 @@ use esp_idf_svc::{
     sys::EspError,
 };
 use game_toolkit_handheld::{
-    Button, Buttons, Framebuffer565, InputState, embedded_graphics::geometry::Size, screen,
+    Framebuffer565, InputState, embedded_graphics::geometry::Size, screen,
 };
+
+use crate::controls::Controls;
 
 /// Landscape QVGA, the ILI9341 rotated.
 pub const SCREEN: Size = screen::QVGA;
@@ -26,14 +29,24 @@ pub struct Board {
     spi: SpiDeviceDriver<'static, SpiDriver<'static>>,
     dc: PinDriver<'static, gpio::Output>,
     _reset: PinDriver<'static, gpio::Output>,
-    buttons: [(PinDriver<'static, gpio::Input>, Button); 6],
+    /// Held high, like the real board's shared display + touch reset; here it only reaches touch.
+    _touch_reset: PinDriver<'static, gpio::Output>,
+    controls: Controls,
     pixels: Vec<u16>,
     band: Vec<u8>,
 }
 
 impl Board {
-    /// SPI2 on GPIO8 (SCK), GPIO9 (MOSI), GPIO10 (CS); DC on GPIO11, reset on GPIO12.
+    /// SPI2 on GPIO8 (SCK), GPIO9 (MOSI), GPIO10 (CS); DC on GPIO11, reset on GPIO12. Touch
+    /// reset on GPIO7, as on the real board.
     pub fn new(p: Peripherals) -> Result<Self, EspError> {
+        let mut controls = Controls::new(p.i2c0, p.pins.gpio4, p.pins.gpio5, p.pins.gpio35)?;
+        controls.power_panel()?; // only lights the VCI_EN LED here
+        let mut touch_reset = PinDriver::output(p.pins.gpio7)?;
+        touch_reset.set_low()?;
+        sleep(Duration::from_millis(10));
+        touch_reset.set_high()?;
+
         let spi = SpiDeviceDriver::new_single(
             p.spi2,
             p.pins.gpio8,
@@ -49,19 +62,12 @@ impl Board {
         reset.set_high()?;
         sleep(Duration::from_millis(120));
 
-        let button = |pin, b| Ok::<_, EspError>((PinDriver::input(pin, Pull::Up)?, b));
         let mut board = Self {
             spi,
             dc: PinDriver::output(p.pins.gpio11)?,
             _reset: reset,
-            buttons: [
-                button(AnyIOPin::from(p.pins.gpio20), Button::Up)?,
-                button(p.pins.gpio21.into(), Button::Down)?,
-                button(p.pins.gpio22.into(), Button::Left)?,
-                button(p.pins.gpio23.into(), Button::Right)?,
-                button(p.pins.gpio35.into(), Button::A)?,
-                button(p.pins.gpio33.into(), Button::B)?,
-            ],
+            _touch_reset: touch_reset,
+            controls,
             pixels: vec![0; (SCREEN.width * SCREEN.height) as usize],
             band: Vec::with_capacity(SCREEN.width as usize * BAND * 2),
         };
@@ -83,16 +89,9 @@ impl Board {
         Ok(())
     }
 
-    /// Push buttons to ground, read now.
+    /// Buttons and touch, read now.
     pub fn input(&mut self) -> InputState {
-        let mut buttons = Buttons::NONE;
-        for (pin, button) in &self.buttons {
-            buttons.set(*button, pin.is_low());
-        }
-        InputState {
-            buttons,
-            ..InputState::default()
-        }
+        self.controls.read()
     }
 
     /// Let `draw` render into the framebuffer, then send it all (big-endian on the wire).
