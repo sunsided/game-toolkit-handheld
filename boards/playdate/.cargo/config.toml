@@ -6,7 +6,8 @@ IGNORE_EXISTING_PLAYDATE_SDK = "1"
 # Device: a PIC ELF with relocations kept, which pdc turns into pdex.bin.
 [target.thumbv7em-none-eabihf]
 rustflags = [
-    "-Crelocation-model=pic",
+    "-Crelocation-model=ropi",
+    "-Ctarget-feature=+no-movt",
     "-Clink-arg=--emit-relocs",
     "-Clink-arg=--gc-sections",
     "-Clink-arg=-Tdevice.x",
