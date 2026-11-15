@@ -76,7 +76,6 @@ tasks:
           if rustup target list --installed | grep -qx "$t"; then echo "  ok      $t"; else echo "  missing $t  (task targets)"; fi
         done
         echo "Playdate (#1):"
-        have cargo-playdate "cargo install cargo-playdate --locked"
         dir "{{.PLAYDATE_SDK}}" "Playdate SDK (PLAYDATE_SDK_PATH)"
         echo "ESP32-S3 (#3):"
         have espup "cargo install espup --locked"
@@ -86,6 +85,114 @@ tasks:
         have ldproxy "cargo install ldproxy --locked"
         have idf.py "ESP-IDF >= 5.3, or let esp-idf-sys fetch it"
         dir "{{.KODE_SDK}}" "Kode SDK (KODE_SDK_PATH)"
+
+  # --- Playdate (boards/playdate) ---------------------------------------------------------
+  # Plain cargo + the SDK's pdc; cargo-playdate can't read edition-2024 manifests. The board pins
+  # an older nightly (playdate-sys needs it), hence --ignore-rust-version.
+
+  playdate:build:
+    desc: Build the dial for the Playdate Simulator (boards/playdate/target/dial.pdx)
+    dir: boards/playdate
+    env:
+      PLAYDATE_SDK_PATH: '{{.PLAYDATE_SDK}}'
+    cmds:
+      - cargo build --example dial --ignore-rust-version
+      - rm -rf target/pdx-sim && mkdir -p target/pdx-sim && cp pdxinfo target/pdx-sim/ && cp target/debug/examples/libdial.so target/pdx-sim/pdex.so
+      - '"$PLAYDATE_SDK_PATH/bin/pdc" target/pdx-sim target/dial.pdx'
+
+  playdate:sim:
+    desc: Run the dial in the Playdate Simulator
+    dir: boards/playdate
+    deps: [playdate:build]
+    env:
+      PLAYDATE_SDK_PATH: '{{.PLAYDATE_SDK}}'
+    cmds:
+      - '"$PLAYDATE_SDK_PATH/bin/PlaydateSimulator" "$PWD/target/dial.pdx"'
+
+  playdate:device:
+    desc: Build the dial for a real Playdate (boards/playdate/target/dial-device.pdx; sideload it)
+    dir: boards/playdate
+    env:
+      PLAYDATE_SDK_PATH: '{{.PLAYDATE_SDK}}'
+    cmds:
+      - cargo rustc --release --example dial --crate-type bin --target thumbv7em-none-eabihf -Zbuild-std=core,alloc --ignore-rust-version
+      - rm -rf target/pdx-device && mkdir -p target/pdx-device && cp pdxinfo target/pdx-device/ && cp target/thumbv7em-none-eabihf/release/examples/dial target/pdx-device/pdex.elf
+      - '"$PLAYDATE_SDK_PATH/bin/pdc" target/pdx-device target/dial-device.pdx'
+
+  # --- ESP32-S3 (boards/esp32s3) ----------------------------------------------------------
+
+  s3:setup:
+    desc: Install the Xtensa Rust toolchain (espup) and espflash
+    cmds:
+      - cargo install espup --locked
+      - espup install --targets esp32s3
+      - cargo install espflash --locked
+
+  s3:build:
+    desc: Build the ESP32-S3 maze (Embassy and blocking binaries)
+    dir: boards/esp32s3
+    cmds:
+      - . ~/export-esp.sh && cargo build --release
+
+  s3:wokwi:
+    desc: Run the Embassy maze in Wokwi, screenshot to boards/esp32s3/target/wokwi-embassy.png (needs WOKWI_CLI_TOKEN)
+    dir: boards/esp32s3
+    deps: [s3:build]
+    cmds:
+      - wokwi-cli --timeout 8000 --screenshot-part lcd1 --screenshot-time 6000 --screenshot-file target/wokwi-embassy.png
+
+  s3:wokwi:blocking:
+    desc: Run the superloop maze in Wokwi, screenshot to boards/esp32s3/target/wokwi-blocking.png
+    dir: boards/esp32s3
+    deps: [s3:build]
+    cmds:
+      - wokwi-cli wokwi-blocking --diagram-file diagram.json --timeout 8000 --screenshot-part lcd1 --screenshot-time 6000 --screenshot-file target/wokwi-blocking.png
+
+  s3:flash:
+    desc: Flash a real ESP32-S3 board and open the serial monitor (BIN=maze-blocking for the superloop)
+    dir: boards/esp32s3
+    vars:
+      BIN: '{{.BIN | default "maze-embassy"}}'
+    cmds:
+      - . ~/export-esp.sh && cargo run --release --bin {{.BIN}}
+
+  # --- Kode Dot (boards/kode-dot) ---------------------------------------------------------
+  # ESP-IDF 6.1.1 through esp-idf-sys; the board pins nightly-2026-10-14 (newer std breaks on
+  # espidf). The first build downloads ESP-IDF into boards/kode-dot/.embuild.
+
+  kode:setup:
+    desc: Install ldproxy, espflash and the pinned nightly for the Kode Dot
+    cmds:
+      - cargo install ldproxy espflash --locked
+      - rustup toolchain install nightly-2026-10-14 --component rust-src,clippy,rustfmt
+
+  kode:build:
+    desc: Build the Kode Dot app image (boards/kode-dot/target/.../board-kode-dot.bin)
+    dir: boards/kode-dot
+    vars:
+      OUT: target/riscv32imafc-esp-espidf/release
+    cmds:
+      - cargo build --release
+      - espflash save-image --chip esp32p4 {{.OUT}}/board-kode-dot {{.OUT}}/board-kode-dot.bin
+
+  kode:wokwi:
+    desc: Run the maze on Wokwi's ESP32-P4 with an ILI9341 stand-in, screenshot to boards/kode-dot/target/wokwi.png
+    dir: boards/kode-dot
+    vars:
+      OUT: target/riscv32imafc-esp-espidf/release
+    cmds:
+      - cargo build --release --features wokwi
+      - espflash save-image --chip esp32p4 --merge --bootloader {{.OUT}}/build/bootloader.bin --partition-table {{.OUT}}/build/partition-table.bin {{.OUT}}/board-kode-dot {{.OUT}}/board-kode-dot-wokwi.bin
+      - wokwi-cli --timeout 20000 --timeout-exit-code 0 --screenshot-part lcd --screenshot-time 19000 --screenshot-file target/wokwi.png --serial-log-file target/wokwi-serial.log .
+
+  kode:flash:
+    desc: Write the app into the Kode Dot's app_pending mailbox (0x1A00000); kodeOS adopts it on next boot
+    dir: boards/kode-dot
+    deps: [kode:build]
+    prompt: Write board-kode-dot.bin to 0x1A00000 on the connected Kode Dot? (never to 0x0, that would overwrite kodeOS)
+    cmds:
+      # Rebuilds the hardware image first, in case kode:wokwi left the wokwi build behind.
+      - espflash write-bin 0x1A00000 target/riscv32imafc-esp-espidf/release/board-kode-dot.bin
 
   # --- Quality gate -----------------------------------------------------------------------
 

@@ -7,9 +7,9 @@ browser window.
 | Target | Screen | Color | Status |
 |--------|--------|-------|--------|
 | Simulator (game-toolkit, native + web) | any | `Rgb565`, `BinaryColor` | works |
-| ESP32-S3 + SPI panel (ST7789 / ILI9341) | 320x240 | `Rgb565` | planned |
-| [Kode Dot](https://kode.diy/) (ESP32-P4) | 410x502 AMOLED (portrait) | `Rgb565` | planned |
-| Playdate | 400x240 1-bit | `BinaryColor` | planned |
+| ESP32-S3 + SPI panel (ILI9341), `boards/esp32s3` | 320x240 | `Rgb565` | builds; Embassy + blocking runtimes; Wokwi |
+| [Kode Dot](https://kode.diy/) (ESP32-P4), `boards/kode-dot` | 410x502 AMOLED (portrait) | `Rgb565` | builds (ESP-IDF 6.1, FreeRTOS); hardware untested; Wokwi stand-in |
+| Playdate, `boards/playdate` | 400x240 1-bit | `BinaryColor` | runs in the SDK Simulator; device build untested |
 
 ```rust,ignore
 use game_toolkit_handheld::{Button, HandheldGame, Input, embedded_graphics::{pixelcolor::BinaryColor, prelude::*}};
@@ -41,6 +41,12 @@ microsecond counter into `dt`. That fits a blocking superloop, an interrupt or R
 Embassy `async` task, an RTOS thread (FreeRTOS under ESP-IDF), the Playdate's update callback,
 and the game-toolkit simulator alike. Sound is a separate `Send` `AudioSource` the game hands
 over once, so an audio interrupt, DMA task or thread owns it while the main loop owns the game.
+
+Board crates are standalone (own toolchain each); drive them through the Taskfile: `task --list`,
+`task doctor` for what is installed.
+
+Playdate is a registered trademark of Panic. This project is not affiliated with or endorsed by
+Panic. Kode Dot is a trademark of Kode DIY.
 
 ## License
 
