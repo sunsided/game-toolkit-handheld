@@ -1,0 +1,13 @@
+# cargo-release configuration for the root workspace (game-toolkit-handheld).
+#
+# Every crate is versioned and released on its own with a `<crate>-v<version>` tag. Run
+# `cargo release <level>` here for the core, or in boards/<board> for a board crate: each board
+# is its own workspace with its own release.toml. cargo-release only bumps, commits, tags and
+# pushes; the tag triggers .github/workflows/release.yml, which publishes to crates.io via
+# trusted publishing and creates the GitHub Release.
+allow-branch = ["main"]
+publish = false
+# Only the core is released from this workspace; the commit message has no crate context.
+pre-release-commit-message = "Release game-toolkit-handheld {{version}}"
+tag-name = "{{crate_name}}-v{{version}}"
+tag-message = "Release {{crate_name}} {{version}}"

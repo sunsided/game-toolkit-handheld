@@ -20,3 +20,7 @@ env_logger = { workspace = true }
 
 [lints]
 workspace = true
+
+# Not released: cargo-release would otherwise tag it along with the core.
+[package.metadata.release]
+release = false

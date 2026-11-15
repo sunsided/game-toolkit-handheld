@@ -1,0 +1,8 @@
+# cargo-release configuration for this board's workspace; see the repository's release.toml.
+# `cargo release <level>` here bumps, commits, tags `<crate>-v<version>` and pushes; the tag
+# triggers .github/workflows/release.yml.
+allow-branch = ["main"]
+publish = false
+pre-release-commit-message = "Release {{crate_name}} {{version}}"
+tag-name = "{{crate_name}}-v{{version}}"
+tag-message = "Release {{crate_name}} {{version}}"
