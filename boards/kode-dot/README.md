@@ -1,8 +1,10 @@
 # game-toolkit-handheld-kode-dot
 
-Runs a [game-toolkit-handheld](../../crates/handheld) game on the
+Runs a [game-toolkit-handheld](https://crates.io/crates/game-toolkit-handheld) game on the
 [Kode Dot](https://kode.diy/) (ESP32-P4): the 410x502 CO5300 AMOLED over MIPI-DSI, the D-pad and
 BOT through the TCA6408A expander, TOP on GPIO35, and CST820 touch.
+
+> **Alpha:** this has run in Wokwi but not yet on a real Kode Dot.
 
 ```rust
 use game_toolkit_handheld_kode_dot::run;

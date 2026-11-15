@@ -1,11 +1,13 @@
 [package]
 name = "game-toolkit-handheld-kode-dot"
 description = "Kode Dot (ESP32-P4) backend for game-toolkit-handheld: run any Rgb565 HandheldGame on the board"
-version = "0.1.0"
+version = "0.1.0-alpha.1"
 edition = "2024"
 license = "EUPL-1.2"
 repository = "https://github.com/sunsided/game-toolkit-handheld"
 readme = "README.md"
+# docs.rs can't build ESP-IDF targets; the README is the documentation.
+documentation = "https://github.com/sunsided/game-toolkit-handheld/tree/main/boards/kode-dot"
 keywords = ["kode-dot", "esp32p4", "handheld", "game", "embedded"]
 categories = ["embedded", "game-development"]
 # Nightly comes from rust-toolchain.toml (build-std for a tier-3 target).

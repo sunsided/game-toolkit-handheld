@@ -775,7 +775,7 @@ dependencies = [
 
 [[package]]
 name = "game-toolkit-handheld-kode-dot"
-version = "0.1.0"
+version = "0.1.0-alpha.1"
 dependencies = [
  "co5300",
  "cst820",
