@@ -1,19 +1,21 @@
 [package]
-name = "board-kode-dot"
-description = "Kode Dot (ESP32-P4) backend for game-toolkit-handheld"
+name = "game-toolkit-handheld-kode-dot"
+description = "Kode Dot (ESP32-P4) backend for game-toolkit-handheld: run any Rgb565 HandheldGame on the board"
 version = "0.1.0"
 edition = "2024"
 license = "EUPL-1.2"
-publish = false
+repository = "https://github.com/sunsided/game-toolkit-handheld"
+readme = "README.md"
+keywords = ["kode-dot", "esp32p4", "handheld", "game", "embedded"]
+categories = ["embedded", "game-development"]
 # Nightly comes from rust-toolchain.toml (build-std for a tier-3 target).
 rust-version = "1.95"
 
 # Own workspace: this crate needs the ESP-IDF toolchain and target, the root workspace doesn't.
 [workspace]
 
-[[bin]]
-name = "board-kode-dot"
-harness = false # no test harness on the device
+[lib]
+test = false # no test harness on the device
 
 [features]
 ## Run in Wokwi's ESP32-P4: an ILI9341 SPI panel instead of the CO5300 AMOLED. The TCA6408A
@@ -21,13 +23,15 @@ harness = false # no test harness on the device
 wokwi = []
 
 [dependencies]
-game-toolkit-handheld = { path = "../../crates/handheld" }
-game-toolkit-handheld-demos = { path = "../../crates/demos" }
+game-toolkit-handheld = { path = "../../crates/handheld", version = "0.1" }
 cst820 = "0.2"
 embedded-hal = "1.0"
 esp-idf-svc = "0.53"
 log = "0.4"
 tca6408a = "0.1"
+
+[dev-dependencies]
+game-toolkit-handheld-demos = { path = "../../crates/demos" }
 
 [build-dependencies]
 embuild = "0.33"

@@ -1,7 +1,7 @@
 [workspace]
 resolver = "3"
-# Board crates need their own toolchains (espup, esp-idf, Playdate SDK) and join as they land,
-# outside `default-members`.
+# Board crates (boards/*) stay out: each is its own workspace with its own toolchain, target
+# config and lockfile (espup, esp-idf, Playdate SDK), which cargo only applies from that directory.
 members = ["crates/handheld", "crates/demos"]
 
 [workspace.package]

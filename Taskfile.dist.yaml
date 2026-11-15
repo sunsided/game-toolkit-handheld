@@ -167,13 +167,13 @@ tasks:
       - rustup toolchain install nightly-2026-10-14 --component rust-src,clippy,rustfmt
 
   kode:build:
-    desc: Build the Kode Dot app image (boards/kode-dot/target/.../board-kode-dot.bin)
+    desc: Build the Kode Dot maze app image (boards/kode-dot/target/.../examples/maze.bin)
     dir: boards/kode-dot
     vars:
-      OUT: target/riscv32imafc-esp-espidf/release
+      OUT: target/riscv32imafc-esp-espidf/release/examples
     cmds:
-      - cargo build --release
-      - espflash save-image --chip esp32p4 {{.OUT}}/board-kode-dot {{.OUT}}/board-kode-dot.bin
+      - cargo build --release --example maze
+      - espflash save-image --chip esp32p4 {{.OUT}}/maze {{.OUT}}/maze.bin
 
   kode:wokwi:
     desc: Run the maze on Wokwi's ESP32-P4 with an ILI9341 stand-in, screenshot to boards/kode-dot/target/wokwi.png
@@ -187,8 +187,8 @@ tasks:
     vars:
       OUT: target/wokwi/riscv32imafc-esp-espidf/release
     cmds:
-      - cargo build --release --features wokwi
-      - espflash save-image --chip esp32p4 --merge --bootloader {{.OUT}}/build/bootloader.bin --partition-table {{.OUT}}/build/partition-table.bin {{.OUT}}/board-kode-dot {{.OUT}}/board-kode-dot-wokwi.bin
+      - cargo build --release --features wokwi --example maze
+      - espflash save-image --chip esp32p4 --merge --bootloader {{.OUT}}/build/bootloader.bin --partition-table {{.OUT}}/build/partition-table.bin {{.OUT}}/examples/maze {{.OUT}}/examples/maze-wokwi.bin
       - wokwi-cli --timeout 20000 --timeout-exit-code 0 --screenshot-part lcd --screenshot-time 19000 --screenshot-file target/wokwi.png --serial-log-file target/wokwi-serial.log .
 
   kode:wokwi:chips:
@@ -210,9 +210,9 @@ tasks:
     desc: Write the app into the Kode Dot's app_pending mailbox (0x1A00000); kodeOS adopts it on next boot
     dir: boards/kode-dot
     deps: [kode:build]
-    prompt: Write board-kode-dot.bin to 0x1A00000 on the connected Kode Dot? (never to 0x0, that would overwrite kodeOS)
+    prompt: Write maze.bin to 0x1A00000 on the connected Kode Dot? (never to 0x0, that would overwrite kodeOS)
     cmds:
-      - espflash write-bin 0x1A00000 target/riscv32imafc-esp-espidf/release/board-kode-dot.bin
+      - espflash write-bin 0x1A00000 target/riscv32imafc-esp-espidf/release/examples/maze.bin
 
   # --- Quality gate -----------------------------------------------------------------------
 

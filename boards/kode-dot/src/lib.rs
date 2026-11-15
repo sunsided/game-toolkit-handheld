@@ -1,9 +1,13 @@
-//! Kode Dot (ESP32-P4) backend for game-toolkit-handheld, running the `Maze` demo.
+//! Kode Dot (ESP32-P4) backend for game-toolkit-handheld: [`run`] drives any `Rgb565`
+//! [`HandheldGame`] on the board.
 //!
 //! The game loop runs in its own std thread on FreeRTOS. Default build: the CO5300 AMOLED over
 //! MIPI-DSI, the D-pad and BOT on the TCA6408A expander, TOP on GPIO35, CST820 touch. With the
 //! `wokwi` feature: an ILI9341 SPI panel in Wokwi's ESP32-P4 instead, with the expander and touch
 //! controller as Wokwi custom chips on the same pins.
+//!
+//! The app crate needs this crate's ESP-IDF setup: `sdkconfig.defaults`, `.cargo/config.toml`,
+//! `rust-toolchain.toml` and `build.rs` (see the README).
 //!
 //! No sound: the Kode Dot's speaker amp is enabled from the ESP32-C5 co-processor.
 #![deny(unsafe_code)]
@@ -14,8 +18,9 @@ use esp_idf_svc::{
     hal::{delay::FreeRtos, peripherals::Peripherals},
     sys::EspError,
 };
-use game_toolkit_handheld::{FrameClock, HandheldGame, Input};
-use game_toolkit_handheld_demos::Maze;
+use game_toolkit_handheld::{
+    FrameClock, HandheldGame, Input, embedded_graphics::pixelcolor::Rgb565,
+};
 
 mod controls;
 #[cfg(not(feature = "wokwi"))]
@@ -26,11 +31,19 @@ mod kode;
 mod wokwi;
 
 #[cfg(not(feature = "wokwi"))]
-use kode::{Board, SCREEN};
+use kode::Board;
+/// The screen size the game gets: 410x502 portrait, or 320x240 with the `wokwi` feature.
+#[cfg(not(feature = "wokwi"))]
+pub use kode::SCREEN;
 #[cfg(feature = "wokwi")]
-use wokwi::{Board, SCREEN};
+use wokwi::Board;
+#[cfg(feature = "wokwi")]
+pub use wokwi::SCREEN;
 
-fn main() {
+/// Run `G` on the board: ESP-IDF patches, logging, then the game loop in a 32 KB thread.
+///
+/// Returns only if the hardware fails; the error is logged.
+pub fn run<G: HandheldGame<Color = Rgb565>>() {
     esp_idf_svc::sys::link_patches();
     let logger = esp_idf_svc::log::init_from_esp_idf();
     // The CST820 NAKs while it dozes; the I2C driver would log that every frame.
@@ -47,7 +60,7 @@ fn main() {
     let game = std::thread::Builder::new()
         .name("game".into())
         .stack_size(32 * 1024)
-        .spawn(run)
+        .spawn(game_loop::<G>)
         .expect("spawn game thread");
     if let Ok(Err(e)) = game.join() {
         log::error!("game stopped: {e}");
@@ -55,14 +68,14 @@ fn main() {
 }
 
 /// The game loop: input, update, render, present, forever.
-fn run() -> Result<(), EspError> {
+fn game_loop<G: HandheldGame<Color = Rgb565>>() -> Result<(), EspError> {
     let mut board = Board::new(Peripherals::take()?)?;
-    let mut game = Maze::init(SCREEN);
+    let mut game = G::init(SCREEN);
     let mut input = Input::default();
     let mut clock = FrameClock::new();
     let start = Instant::now();
     let (mut frames, mut since) = (0u32, Instant::now());
-    log::info!("running Maze at {}x{}", SCREEN.width, SCREEN.height);
+    log::info!("running at {}x{}", SCREEN.width, SCREEN.height);
     loop {
         input.advance(board.input());
         game.update(&input, clock.tick(start.elapsed().as_micros() as u64));

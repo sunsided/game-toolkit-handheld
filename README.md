@@ -8,7 +8,7 @@ browser window.
 |--------|--------|-------|--------|
 | Simulator (game-toolkit, native + web) | any | `Rgb565`, `BinaryColor` | works |
 | ESP32-S3 + SPI panel (ILI9341), `boards/esp32s3` | 320x240 | `Rgb565` | builds; Embassy + blocking runtimes; Wokwi |
-| [Kode Dot](https://kode.diy/) (ESP32-P4), `boards/kode-dot` | 410x502 AMOLED (portrait) | `Rgb565` | builds (ESP-IDF 6.1, FreeRTOS); hardware untested; Wokwi stand-in |
+| [Kode Dot](https://kode.diy/) (ESP32-P4), `boards/kode-dot` (library: `game-toolkit-handheld-kode-dot`) | 410x502 AMOLED (portrait) | `Rgb565` | builds (ESP-IDF 6.1, FreeRTOS); hardware untested; Wokwi stand-in |
 | Playdate, `boards/playdate` | 400x240 1-bit | `BinaryColor` | runs in the SDK Simulator; device build untested |
 
 ```rust,ignore
