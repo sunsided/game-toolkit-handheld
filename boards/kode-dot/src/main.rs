@@ -9,7 +9,10 @@
 
 use std::time::Instant;
 
-use esp_idf_svc::{hal::peripherals::Peripherals, sys::EspError};
+use esp_idf_svc::{
+    hal::{delay::FreeRtos, peripherals::Peripherals},
+    sys::EspError,
+};
 use game_toolkit_handheld::{FrameClock, HandheldGame, Input};
 use game_toolkit_handheld_demos::Maze;
 
@@ -62,6 +65,8 @@ fn run() -> Result<(), EspError> {
         input.advance(board.input());
         game.update(&input, clock.tick(start.elapsed().as_micros() as u64));
         board.present(|fb| game.render(fb))?;
+        // Block for one tick so this core's idle task runs and feeds the task watchdog.
+        FreeRtos::delay_ms(1);
 
         frames += 1;
         if since.elapsed().as_secs() >= 5 {
