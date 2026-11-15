@@ -7,7 +7,7 @@ browser window.
 | Target | Screen | Color | Status |
 |--------|--------|-------|--------|
 | Simulator (game-toolkit, native + web) | any | `Rgb565`, `BinaryColor` | works |
-| ESP32-S3 + SPI panel (ILI9341), `boards/esp32s3` | 320x240 | `Rgb565` | builds; Embassy + blocking runtimes; Wokwi |
+| ESP32-S3 + SPI panel (ILI9341), [`boards/esp32s3`](boards/esp32s3) | 320x240 | `Rgb565` | builds; Embassy + blocking runtimes; Wokwi |
 | [Kode Dot](https://kode.diy/) (ESP32-P4), [`boards/kode-dot`](boards/kode-dot) | 410x502 AMOLED (portrait) | `Rgb565` | builds (ESP-IDF 6.1, FreeRTOS); hardware untested; Wokwi stand-in |
 | Playdate, `boards/playdate` | 400x240 1-bit | `BinaryColor` | runs in the SDK Simulator; device build untested |
 
@@ -59,12 +59,13 @@ fn main() {
 Its [README](boards/kode-dot/README.md) lists the ESP-IDF setup the app needs and how to flash
 without overwriting kodeOS.
 
-The other backends aren't standalone crates yet and are only used inside this repository:
+The ESP32-S3 backend is a library too, `game-toolkit-handheld-esp32s3`, for an ESP32-S3 with an
+ILI9341 and six buttons on fixed pins. The app owns the runtime (a blocking superloop or
+Embassy) and calls `Board::frame` once per frame; its [README](boards/esp32s3/README.md) has the
+wiring and the app setup.
 
-- **ESP32-S3** (`boards/esp32s3`): already generic (`Board::frame::<G>`), but tied to one
-  devkit + ILI9341 wiring, with no setup docs for outside apps.
-- **Playdate** (`boards/playdate`): already generic (`run::<G>` plus an entry-point macro), but
-  without setup docs for outside apps.
+The Playdate backend isn't a standalone crate yet and is only used inside this repository. It's
+already generic (`run::<G>` plus an entry-point macro), but has no setup docs for outside apps.
 
 Playdate is a registered trademark of Panic. This project is not affiliated with or endorsed by
 Panic. Kode Dot is a trademark of Kode DIY.

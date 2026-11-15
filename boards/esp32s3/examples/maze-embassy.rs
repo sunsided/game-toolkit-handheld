@@ -3,13 +3,13 @@
 #![no_main]
 #![forbid(unsafe_code)]
 
-use board_esp32s3::Board;
 use embassy_executor::Spawner;
 use embassy_time::{Duration, Ticker};
 use esp_backtrace as _;
 use esp_hal::{clock::CpuClock, timer::timg::TimerGroup};
-use game_toolkit_handheld::{HandheldGame, screen};
+use game_toolkit_handheld::HandheldGame;
 use game_toolkit_handheld_demos::Maze;
+use game_toolkit_handheld_esp32s3::{Board, SCREEN};
 
 esp_bootloader_esp_idf::esp_app_desc!();
 
@@ -22,7 +22,7 @@ async fn main(_spawner: Spawner) -> ! {
     let (mut board, spare) = Board::new(p);
     esp_rtos::start(TimerGroup::new(spare.timg0).timer0, spare.int0);
 
-    let mut game = Maze::init(screen::QVGA);
+    let mut game = Maze::init(SCREEN);
     esp_println::println!("maze-embassy running");
     let mut ticker = Ticker::every(Duration::from_hz(FPS));
     loop {

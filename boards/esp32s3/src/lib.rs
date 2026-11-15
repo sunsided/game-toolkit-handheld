@@ -1,7 +1,7 @@
 //! ESP32-S3 backend for game-toolkit-handheld: an ILI9341 320x240 SPI panel and six buttons.
 //!
-//! Shared by the `maze-embassy` and `maze-blocking` binaries; they differ only in how they
-//! pace [`Board::frame`].
+//! The app owns the runtime: call [`Board::frame`] from a blocking superloop or an Embassy task
+//! (the `maze-blocking` and `maze-embassy` examples). See the README for the app setup.
 //!
 //! # Pins
 //!
@@ -36,7 +36,10 @@ use esp_hal::{
 };
 use game_toolkit_handheld::{
     Button, Buttons, FrameClock, Framebuffer565, HandheldGame, InputState,
-    embedded_graphics::pixelcolor::{Rgb565, raw::RawU16},
+    embedded_graphics::{
+        geometry::Size,
+        pixelcolor::{Rgb565, raw::RawU16},
+    },
     screen,
 };
 use mipidsi::{
@@ -47,8 +50,11 @@ use mipidsi::{
 };
 use static_cell::ConstStaticCell;
 
-/// Pixels in one QVGA frame.
-const PIXELS: usize = (screen::QVGA.width * screen::QVGA.height) as usize;
+/// The screen the game gets: the panel in landscape, 320x240.
+pub const SCREEN: Size = screen::QVGA;
+
+/// Pixels in one frame.
+const PIXELS: usize = (SCREEN.width * SCREEN.height) as usize;
 
 /// The frame lives in internal SRAM as a static: 153.6 KB, too big for a task stack.
 static FRAME: ConstStaticCell<[u16; PIXELS]> = ConstStaticCell::new([0; PIXELS]);
@@ -175,9 +181,9 @@ impl Board {
             .clock
             .tick(Instant::now().duration_since_epoch().as_micros());
         game.update(&self.input, dt);
-        game.render(&mut Framebuffer565::new(self.frame, screen::QVGA));
+        game.render(&mut Framebuffer565::new(self.frame, SCREEN));
 
-        let (w, h) = (screen::QVGA.width as u16, screen::QVGA.height as u16);
+        let (w, h) = (SCREEN.width as u16, SCREEN.height as u16);
         let pixels = self.frame.iter().map(|&raw| Rgb565::from(RawU16::new(raw)));
         // SPI errors on this bus are infallible in practice; drop the frame rather than panic.
         let _ = self.panel.set_pixels(0, 0, w - 1, h - 1, pixels);

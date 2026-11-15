@@ -129,10 +129,10 @@ tasks:
       - cargo install espflash --locked
 
   s3:build:
-    desc: Build the ESP32-S3 maze (Embassy and blocking binaries)
+    desc: Build the ESP32-S3 maze examples (Embassy and blocking)
     dir: boards/esp32s3
     cmds:
-      - . ~/export-esp.sh && cargo build --release
+      - . ~/export-esp.sh && cargo build --release --examples
 
   s3:wokwi:
     desc: Run the Embassy maze in Wokwi, screenshot to boards/esp32s3/target/wokwi-embassy.png (needs WOKWI_CLI_TOKEN)
@@ -146,15 +146,15 @@ tasks:
     dir: boards/esp32s3
     deps: [s3:build]
     cmds:
-      - wokwi-cli wokwi-blocking --diagram-file diagram.json --timeout 8000 --timeout-exit-code 0 --screenshot-part lcd1 --screenshot-time 6000 --screenshot-file target/wokwi-blocking.png
+      - wokwi-cli wokwi-blocking --diagram-file ../diagram.json --timeout 8000 --timeout-exit-code 0 --screenshot-part lcd1 --screenshot-time 6000 --screenshot-file target/wokwi-blocking.png
 
   s3:flash:
-    desc: Flash a real ESP32-S3 board and open the serial monitor (BIN=maze-blocking for the superloop)
+    desc: Flash a real ESP32-S3 board and open the serial monitor (BIN=maze-blocking for the superloop example)
     dir: boards/esp32s3
     vars:
       BIN: '{{.BIN | default "maze-embassy"}}'
     cmds:
-      - . ~/export-esp.sh && cargo run --release --bin {{.BIN}}
+      - . ~/export-esp.sh && cargo run --release --example {{.BIN}}
 
   # --- Kode Dot (boards/kode-dot) ---------------------------------------------------------
   # ESP-IDF 6.1.1 through esp-idf-sys; the board pins nightly-2026-10-14 (newer std breaks on

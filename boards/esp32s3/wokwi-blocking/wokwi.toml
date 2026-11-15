@@ -1,5 +1,5 @@
-# maze-blocking: wokwi-cli wokwi-blocking --diagram-file diagram.json   (from boards/esp32s3)
+# maze-blocking: wokwi-cli wokwi-blocking --diagram-file ../diagram.json   (from boards/esp32s3)
 [wokwi]
 version = 1
-elf = "../target/xtensa-esp32s3-none-elf/release/maze-blocking"
-firmware = "../target/xtensa-esp32s3-none-elf/release/maze-blocking"
+elf = "../target/xtensa-esp32s3-none-elf/release/examples/maze-blocking"
+firmware = "../target/xtensa-esp32s3-none-elf/release/examples/maze-blocking"

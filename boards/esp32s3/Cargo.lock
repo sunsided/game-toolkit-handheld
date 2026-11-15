@@ -95,24 +95,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "board-esp32s3"
-version = "0.1.0"
-dependencies = [
- "embassy-executor",
- "embassy-time",
- "embedded-hal-bus",
- "esp-backtrace",
- "esp-bootloader-esp-idf",
- "esp-hal",
- "esp-println",
- "esp-rtos",
- "game-toolkit-handheld",
- "game-toolkit-handheld-demos",
- "mipidsi",
- "static_cell",
-]
-
-[[package]]
 name = "bytemuck"
 version = "1.25.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1040,6 +1022,24 @@ version = "0.1.0"
 dependencies = [
  "game-toolkit-handheld",
  "micromath",
+]
+
+[[package]]
+name = "game-toolkit-handheld-esp32s3"
+version = "0.1.0"
+dependencies = [
+ "embassy-executor",
+ "embassy-time",
+ "embedded-hal-bus",
+ "esp-backtrace",
+ "esp-bootloader-esp-idf",
+ "esp-hal",
+ "esp-println",
+ "esp-rtos",
+ "game-toolkit-handheld",
+ "game-toolkit-handheld-demos",
+ "mipidsi",
+ "static_cell",
 ]
 
 [[package]]
