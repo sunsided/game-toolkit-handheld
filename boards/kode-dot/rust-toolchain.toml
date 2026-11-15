@@ -1,0 +1,5 @@
+[toolchain]
+# riscv32imafc-esp-espidf is tier 3: std is built from source. Pinned before 2026-10-16, when
+# std's libc moved to 0.2.191, whose espidf `stat` (st_atim) std itself doesn't build against.
+channel = "nightly-2026-10-14"
+components = ["rust-src", "clippy", "rustfmt"]

@@ -1,0 +1,5 @@
+[wokwi]
+version = 1
+# Merged image (bootloader + partition table + app) from `espflash save-image --merge`.
+firmware = "target/riscv32imafc-esp-espidf/release/board-kode-dot-wokwi.bin"
+elf = "target/riscv32imafc-esp-espidf/release/board-kode-dot"

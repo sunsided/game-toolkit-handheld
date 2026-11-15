@@ -1,0 +1,15 @@
+[build]
+target = "riscv32imafc-esp-espidf"
+
+[target.riscv32imafc-esp-espidf]
+linker = "ldproxy"
+# No runner on purpose: `espflash flash` writes bootloader + app at 0x0 and would replace kodeOS.
+# Flash the app image into the app_pending mailbox instead (see `task kode:flash`).
+rustflags = ["--cfg", "espidf_time64"]
+
+[unstable]
+build-std = ["std", "panic_abort"]
+
+[env]
+MCU = "esp32p4"
+ESP_IDF_VERSION = "v6.1.1"

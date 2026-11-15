@@ -1,0 +1,61 @@
+[package]
+name = "board-kode-dot"
+description = "Kode Dot (ESP32-P4) backend for game-toolkit-handheld"
+version = "0.1.0"
+edition = "2024"
+license = "EUPL-1.2"
+publish = false
+# Nightly comes from rust-toolchain.toml (build-std for a tier-3 target).
+rust-version = "1.95"
+
+# Own workspace: this crate needs the ESP-IDF toolchain and target, the root workspace doesn't.
+[workspace]
+
+[[bin]]
+name = "board-kode-dot"
+harness = false # no test harness on the device
+
+[features]
+## Run in Wokwi's ESP32-P4: an ILI9341 SPI panel and GPIO push buttons instead of the CO5300
+## AMOLED and the TCA6408A expander.
+wokwi = []
+
+[dependencies]
+game-toolkit-handheld = { path = "../../crates/handheld" }
+game-toolkit-handheld-demos = { path = "../../crates/demos" }
+esp-idf-svc = "0.53"
+log = "0.4"
+
+[build-dependencies]
+embuild = "0.33"
+
+[package.metadata.esp-idf-sys]
+# MIPI-DSI CO5300 driver from Espressif's registry (Apache-2.0). Its bindings join the esp-idf ones
+# in `esp_idf_svc::sys` (a separate module would duplicate every esp_lcd type).
+extra_components = [
+    { remote_component = { name = "espressif/esp_lcd_co5300", version = "2.2.0" }, bindings_header = "src/co5300.h" },
+]
+
+[profile.release]
+opt-level = "s"
+debug = true # symbols only, not flashed
+
+[profile.dev]
+debug = true
+opt-level = "z"
+
+# Copied from the root workspace's [workspace.lints]; unsafe_code is `deny` (not `forbid`) so the
+# one FFI module can opt out.
+[lints.rust]
+unsafe_code = "deny"
+missing_docs = "warn"
+rust_2018_idioms = { level = "warn", priority = -1 }
+unused_qualifications = "warn"
+
+[lints.clippy]
+dbg_macro = "warn"
+todo = "warn"
+manual_let_else = "warn"
+redundant_closure_for_method_calls = "warn"
+semicolon_if_nothing_returned = "warn"
+uninlined_format_args = "warn"
