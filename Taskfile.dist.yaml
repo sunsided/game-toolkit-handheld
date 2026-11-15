@@ -16,26 +16,26 @@ tasks:
   maze:
     desc: Color maze in the simulator (QVGA, sound). Arrows/WASD move, Esc quits
     cmds:
-      - cargo run --all-features --example maze
+      - cargo run -p game-toolkit-handheld-demos --example maze
 
   crank:
     desc: 1-bit crank dial in the simulator (Playdate screen). Mouse wheel or Q/E turns, X inverts
     cmds:
-      - cargo run --all-features --example crank
+      - cargo run -p game-toolkit-handheld-demos --example crank
 
   run:
     desc: Run any example in the simulator (task run EXAMPLE=maze)
     requires:
       vars: [EXAMPLE]
     cmds:
-      - cargo run --all-features --example {{.EXAMPLE}}
+      - cargo run -p game-toolkit-handheld-demos --example {{.EXAMPLE}}
 
   shots:
     desc: Screenshot every example headlessly into target/shots/
     cmds:
       - mkdir -p {{.SHOT_DIR}}
       - for: [maze, crank]
-        cmd: HANDHELD_SHOT={{.SHOT_DIR}}/{{.ITEM}}.png cargo run -q --all-features --example {{.ITEM}}
+        cmd: HANDHELD_SHOT={{.SHOT_DIR}}/{{.ITEM}}.png cargo run -q -p game-toolkit-handheld-demos --example {{.ITEM}}
       - ls -1 {{.SHOT_DIR}}
 
   docs:open:
@@ -53,13 +53,13 @@ tasks:
   check:nostd:
     desc: Build the no_std core for the Playdate CPU (Cortex-M7) and ESP32-C/P RISC-V
     cmds:
-      - cargo clippy -p game-toolkit-handheld --lib --target thumbv7em-none-eabihf --locked -- -D warnings
-      - cargo build -p game-toolkit-handheld --lib --target riscv32imac-unknown-none-elf --locked
+      - cargo clippy -p game-toolkit-handheld -p game-toolkit-handheld-demos --lib --target thumbv7em-none-eabihf --locked -- -D warnings
+      - cargo build -p game-toolkit-handheld -p game-toolkit-handheld-demos --lib --target riscv32imac-unknown-none-elf --locked
 
   check:wasm:
     desc: Clippy the simulator and examples for the browser (wasm32)
     cmds:
-      - cargo clippy --target wasm32-unknown-unknown -p game-toolkit-handheld --all-targets --all-features --locked -- -D warnings
+      - cargo clippy --target wasm32-unknown-unknown --workspace --all-targets --all-features --locked -- -D warnings
 
   doctor:
     desc: Show which toolchains and SDKs for the device backends are installed

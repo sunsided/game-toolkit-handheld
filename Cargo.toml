@@ -2,7 +2,7 @@
 resolver = "3"
 # Board crates need their own toolchains (espup, esp-idf, Playdate SDK) and join as they land,
 # outside `default-members`.
-members = ["crates/handheld"]
+members = ["crates/handheld", "crates/demos"]
 
 [workspace.package]
 version = "0.1.0"

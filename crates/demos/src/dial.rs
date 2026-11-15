@@ -13,11 +13,10 @@ use game_toolkit_handheld::{
         primitives::{Circle, Line, PrimitiveStyle},
         text::{Alignment, Text},
     },
-    screen,
-    sim::{self, SimConfig},
 };
 
-struct Dial {
+/// The 1-bit crank dial.
+pub struct Dial {
     center: Point,
     radius: i32,
     angle: f32,
@@ -56,7 +55,8 @@ impl HandheldGame for Dial {
             .into_styled(PrimitiveStyle::with_stroke(ink, 3))
             .draw(target);
         // 0 degrees points up, clockwise, like the Playdate crank.
-        let (sin, cos) = self.angle.to_radians().sin_cos();
+        // micromath: no_std has no float trig; same call on every target.
+        let (sin, cos) = micromath::F32Ext::sin_cos(self.angle.to_radians());
         let tip = self.center
             + Point::new(
                 (sin * self.radius as f32 * 0.85) as i32,
@@ -90,9 +90,4 @@ fn label(angle: f32) -> [u8; 7] {
         b'e',
         b'g',
     ]
-}
-
-fn main() -> game_toolkit::prelude::Result<()> {
-    env_logger::init();
-    sim::run::<Dial>(SimConfig::new("crank", screen::PLAYDATE))
 }

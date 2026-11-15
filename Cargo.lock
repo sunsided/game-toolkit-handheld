@@ -935,9 +935,18 @@ name = "game-toolkit-handheld"
 version = "0.1.0"
 dependencies = [
  "embedded-graphics",
- "env_logger",
  "game-toolkit",
  "log",
+]
+
+[[package]]
+name = "game-toolkit-handheld-demos"
+version = "0.1.0"
+dependencies = [
+ "env_logger",
+ "game-toolkit",
+ "game-toolkit-handheld",
+ "micromath",
 ]
 
 [[package]]

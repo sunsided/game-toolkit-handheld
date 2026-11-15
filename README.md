@@ -30,7 +30,7 @@ impl HandheldGame for Game {
 ```
 
 Run it in the simulator with `sim::run::<Game>(SimConfig::new("game", screen::PLAYDATE))`
-(feature `toolkit`). Examples: `cargo run --all-features --example maze` (color, sound) and
+(feature `toolkit`). Examples (`crates/demos`, shared with the boards): `cargo run -p game-toolkit-handheld-demos --example maze` (color, sound) and
 `--example crank` (1-bit, Playdate crank on mouse wheel or Q / E).
 
 ## Runtimes

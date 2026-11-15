@@ -12,7 +12,7 @@ rust-version.workspace = true
 keywords = ["gamedev", "embedded", "esp32", "playdate", "no-std"]
 categories = ["game-development", "embedded", "no-std", "graphics"]
 readme = "../../README.md"
-include = ["src/**", "examples/**", "Cargo.toml"]
+include = ["src/**", "Cargo.toml"]
 
 [package.metadata.docs.rs]
 all-features = true
@@ -26,16 +26,5 @@ embedded-graphics = { workspace = true }
 game-toolkit = { workspace = true, optional = true }
 log = { workspace = true, optional = true }
 
-[dev-dependencies]
-env_logger = { workspace = true }
-
 [lints]
 workspace = true
-
-[[example]]
-name = "maze"
-required-features = ["toolkit"]
-
-[[example]]
-name = "crank"
-required-features = ["toolkit"]

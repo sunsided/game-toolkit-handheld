@@ -14,8 +14,6 @@ use game_toolkit_handheld::{
         prelude::*,
         primitives::{PrimitiveStyle, Rectangle},
     },
-    screen,
-    sim::{self, SimConfig},
 };
 
 const MAZE: [&str; 7] = [
@@ -31,7 +29,8 @@ const MAZE: [&str; 7] = [
 /// Samples of beep still to play; written by the game, counted down by the audio source.
 static BEEP: AtomicU32 = AtomicU32::new(0);
 
-struct Maze {
+/// The color D-pad maze.
+pub struct Maze {
     cell: u32,
     origin: Point,
     player: Point,
@@ -152,9 +151,4 @@ impl HandheldGame for Maze {
             }
         })
     }
-}
-
-fn main() -> game_toolkit::prelude::Result<()> {
-    env_logger::init();
-    sim::run::<Maze>(SimConfig::new("maze", screen::QVGA))
 }

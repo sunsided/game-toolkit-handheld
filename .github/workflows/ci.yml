@@ -74,10 +74,10 @@ jobs:
 
       # The core must stay free of std, alloc and the simulator.
       - name: Clippy (Playdate CPU)
-        run: cargo clippy -p game-toolkit-handheld --lib --target thumbv7em-none-eabihf --locked -- -D warnings
+        run: cargo clippy -p game-toolkit-handheld -p game-toolkit-handheld-demos --lib --target thumbv7em-none-eabihf --locked -- -D warnings
 
       - name: Build (ESP32-C/P RISC-V)
-        run: cargo build -p game-toolkit-handheld --lib --target riscv32imac-unknown-none-elf --locked
+        run: cargo build -p game-toolkit-handheld -p game-toolkit-handheld-demos --lib --target riscv32imac-unknown-none-elf --locked
 
   wasm:
     name: wasm (browser simulator)
@@ -98,4 +98,4 @@ jobs:
       - uses: Swatinem/rust-cache@d1527c8f67ef9af357290475d4af4b0fab8f12e0 # v2.9.3
 
       - name: Clippy (wasm32, all features)
-        run: cargo clippy --target wasm32-unknown-unknown -p game-toolkit-handheld --all-targets --all-features --locked -- -D warnings
+        run: cargo clippy --target wasm32-unknown-unknown --workspace --all-targets --all-features --locked -- -D warnings
