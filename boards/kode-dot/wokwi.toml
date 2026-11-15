@@ -6,6 +6,10 @@ elf = "target/wokwi/riscv32imafc-esp-espidf/release/examples/maze"
 
 # Custom chips from the driver crates' GitHub releases, fetched by `task kode:wokwi`.
 [[chip]]
+name = "co5300"
+binary = "target/chips/co5300.chip.wasm"
+
+[[chip]]
 name = "tca6408a"
 binary = "target/chips/tca6408a.chip.wasm"
 

@@ -235,6 +235,26 @@ dependencies = [
 ]
 
 [[package]]
+name = "co5300"
+version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "5a1710a2e1a49904aa2a56c6e849296de0734bd32040db34c533b9c3b7eda08a"
+dependencies = [
+ "co5300-registers",
+ "embedded-hal 1.0.0",
+]
+
+[[package]]
+name = "co5300-registers"
+version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "78861df6ea0999691b9d763b734b095b8172d13fa681f254ac75afcd410033c7"
+dependencies = [
+ "bitfield-struct",
+ "hardware-registers",
+]
+
+[[package]]
 name = "compile-fmt"
 version = "0.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -757,6 +777,7 @@ dependencies = [
 name = "game-toolkit-handheld-kode-dot"
 version = "0.1.0"
 dependencies = [
+ "co5300",
  "cst820",
  "embedded-hal 1.0.0",
  "embuild",

@@ -10,14 +10,9 @@ use esp_idf_svc::{
     },
     sys::EspError,
 };
-use game_toolkit_handheld::{
-    Framebuffer565, InputState, embedded_graphics::geometry::Size, screen,
-};
+use game_toolkit_handheld::{Framebuffer565, InputState};
 
-use crate::{controls::Controls, ffi::Panel};
-
-/// The game sees the whole 410x502 portrait panel.
-pub const SCREEN: Size = screen::KODE_DOT;
+use crate::{SCREEN, controls::Controls, ffi::Panel};
 
 /// Everything the game loop needs from the hardware.
 pub struct Board {

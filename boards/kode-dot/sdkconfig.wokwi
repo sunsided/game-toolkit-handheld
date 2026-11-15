@@ -1,4 +1,4 @@
 # Layered over sdkconfig.defaults for `task kode:wokwi` only.
 # Wokwi's ESP32-P4 model fails most PSRAM writes (ESP-IDF's boot memory test aborts and the chip
-# reboot-loops). The ILI9341 stand-in's 150 KB framebuffer fits internal RAM, so run without PSRAM.
+# reboot-loops). The 410x502 framebuffer (402 KB) fits internal RAM, so run without PSRAM.
 # CONFIG_SPIRAM is not set

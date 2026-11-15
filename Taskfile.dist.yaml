@@ -176,7 +176,7 @@ tasks:
       - espflash save-image --chip esp32p4 {{.OUT}}/maze {{.OUT}}/maze.bin
 
   kode:wokwi:
-    desc: Run the maze on Wokwi's ESP32-P4 with an ILI9341 stand-in, screenshot to boards/kode-dot/target/wokwi.png
+    desc: Run the maze on Wokwi's ESP32-P4 with the CO5300 on SPI, screenshot to boards/kode-dot/target/wokwi.png
     dir: boards/kode-dot
     # Own target dir: the wokwi build has a different sdkconfig (no PSRAM), and sharing one dir
     # would rebuild ESP-IDF on every switch between the two.
@@ -192,13 +192,13 @@ tasks:
       - wokwi-cli --timeout 20000 --timeout-exit-code 0 --screenshot-part lcd --screenshot-time 19000 --screenshot-file target/wokwi.png --serial-log-file target/wokwi-serial.log .
 
   kode:wokwi:chips:
-    desc: Fetch the TCA6408A and CST820 Wokwi chips from their GitHub releases into boards/kode-dot/target/chips
+    desc: Fetch the CO5300, TCA6408A and CST820 Wokwi chips from their GitHub releases into boards/kode-dot/target/chips
     internal: true
     dir: boards/kode-dot/target/chips
     vars:
-      CHIPS: tca6408a@v0.1.0 cst820@v0.2.2
+      CHIPS: co5300@v0.1.0 tca6408a@v0.1.0 cst820@v0.2.2
     status:
-      - test -f tca6408a.chip.wasm -a -f cst820.chip.wasm
+      - test -f co5300.chip.wasm -a -f tca6408a.chip.wasm -a -f cst820.chip.wasm
     cmds:
       - for: { var: CHIPS, split: " " }
         cmd: |

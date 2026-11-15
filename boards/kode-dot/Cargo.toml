@@ -18,12 +18,13 @@ rust-version = "1.95"
 test = false # no test harness on the device
 
 [features]
-## Run in Wokwi's ESP32-P4: an ILI9341 SPI panel instead of the CO5300 AMOLED. The TCA6408A
-## and CST820 run as Wokwi custom chips.
-wokwi = []
+## Run in Wokwi's ESP32-P4: the CO5300, TCA6408A and CST820 run as Wokwi custom chips, the
+## panel on SPI since Wokwi has no MIPI-DSI.
+wokwi = ["dep:co5300"]
 
 [dependencies]
 game-toolkit-handheld = { path = "../../crates/handheld", version = "0.1" }
+co5300 = { version = "0.1", optional = true }
 cst820 = "0.2"
 embedded-hal = "1.0"
 esp-idf-svc = "0.53"

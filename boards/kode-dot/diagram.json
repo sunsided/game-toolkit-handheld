@@ -11,11 +11,10 @@
       "attrs": {}
     },
     {
-      "type": "wokwi-ili9341",
+      "type": "chip-co5300",
       "id": "lcd",
-      "top": -60,
+      "top": -560,
       "left": 200,
-      "rotate": 90,
       "attrs": {}
     },
     {
@@ -120,54 +119,6 @@
       "esp:RX",
       "$serialMonitor:TX",
       "",
-      []
-    ],
-    [
-      "lcd:VCC",
-      "esp:3V3",
-      "red",
-      []
-    ],
-    [
-      "lcd:GND",
-      "esp:GND.1",
-      "black",
-      []
-    ],
-    [
-      "lcd:LED",
-      "esp:3V3",
-      "red",
-      []
-    ],
-    [
-      "lcd:SCK",
-      "esp:8",
-      "green",
-      []
-    ],
-    [
-      "lcd:MOSI",
-      "esp:9",
-      "green",
-      []
-    ],
-    [
-      "lcd:CS",
-      "esp:10",
-      "green",
-      []
-    ],
-    [
-      "lcd:D/C",
-      "esp:11",
-      "green",
-      []
-    ],
-    [
-      "lcd:RST",
-      "esp:12",
-      "green",
       []
     ],
     [
@@ -312,6 +263,48 @@
       "btn_a:2.l",
       "esp:GND.2",
       "black",
+      []
+    ],
+    [
+      "lcd:VDDI",
+      "esp:3V3",
+      "red",
+      []
+    ],
+    [
+      "lcd:GND",
+      "esp:GND.1",
+      "black",
+      []
+    ],
+    [
+      "lcd:SCL",
+      "esp:8",
+      "green",
+      []
+    ],
+    [
+      "lcd:SDI",
+      "esp:9",
+      "green",
+      []
+    ],
+    [
+      "lcd:CSX",
+      "esp:10",
+      "green",
+      []
+    ],
+    [
+      "lcd:DCX",
+      "esp:11",
+      "green",
+      []
+    ],
+    [
+      "lcd:RESX",
+      "esp:7",
+      "orange",
       []
     ]
   ],

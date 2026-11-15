@@ -3,8 +3,8 @@
 //!
 //! The game loop runs in its own std thread on FreeRTOS. Default build: the CO5300 AMOLED over
 //! MIPI-DSI, the D-pad and BOT on the TCA6408A expander, TOP on GPIO35, CST820 touch. With the
-//! `wokwi` feature: an ILI9341 SPI panel in Wokwi's ESP32-P4 instead, with the expander and touch
-//! controller as Wokwi custom chips on the same pins.
+//! `wokwi` feature: Wokwi's ESP32-P4 with the CO5300, expander and touch controller as Wokwi
+//! custom chips; the panel sits on SPI there, since Wokwi has no MIPI-DSI.
 //!
 //! The app crate needs this crate's ESP-IDF setup: `sdkconfig.defaults`, `.cargo/config.toml`,
 //! `rust-toolchain.toml` and `build.rs` (see the README).
@@ -19,7 +19,9 @@ use esp_idf_svc::{
     sys::EspError,
 };
 use game_toolkit_handheld::{
-    FrameClock, HandheldGame, Input, embedded_graphics::pixelcolor::Rgb565,
+    FrameClock, HandheldGame, Input,
+    embedded_graphics::{geometry::Size, pixelcolor::Rgb565},
+    screen,
 };
 
 mod controls;
@@ -32,13 +34,11 @@ mod wokwi;
 
 #[cfg(not(feature = "wokwi"))]
 use kode::Board;
-/// The screen size the game gets: 410x502 portrait, or 320x240 with the `wokwi` feature.
-#[cfg(not(feature = "wokwi"))]
-pub use kode::SCREEN;
 #[cfg(feature = "wokwi")]
 use wokwi::Board;
-#[cfg(feature = "wokwi")]
-pub use wokwi::SCREEN;
+
+/// The screen the game gets: the 410x502 portrait panel, in Wokwi too.
+pub const SCREEN: Size = screen::KODE_DOT;
 
 /// Run `G` on the board: ESP-IDF patches, logging, then the game loop in a 32 KB thread.
 ///

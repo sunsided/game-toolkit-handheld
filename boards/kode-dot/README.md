@@ -58,9 +58,11 @@ espflash write-bin 0x1A00000 my-game.bin
 
 ## Wokwi
 
-The `wokwi` feature swaps the CO5300 for an ILI9341 (320x240) in Wokwi's ESP32-P4. The TCA6408A
-and CST820 run as Wokwi custom chips on the board's real pins, so input goes through the same
-code as on hardware. Wokwi's P4 model doesn't handle PSRAM, so layer `sdkconfig.wokwi` over the
-defaults with `ESP_IDF_SDKCONFIG_DEFAULTS="sdkconfig.defaults;sdkconfig.wokwi"`.
+The `wokwi` feature runs the board in Wokwi's ESP32-P4. The CO5300, TCA6408A and CST820 run as
+Wokwi custom chips from their driver crates, so the game sees the same 410x502 screen and input
+goes through the same code as on hardware. Only the panel transport differs: Wokwi has no
+MIPI-DSI, so the CO5300 sits on SPI and the `co5300` crate drives it. Wokwi's P4 model doesn't
+handle PSRAM, so layer `sdkconfig.wokwi` over the defaults with
+`ESP_IDF_SDKCONFIG_DEFAULTS="sdkconfig.defaults;sdkconfig.wokwi"`.
 `diagram.json` and `wokwi.toml` show the wiring. In this repository, `task kode:wokwi` runs the
 `maze` example there.
