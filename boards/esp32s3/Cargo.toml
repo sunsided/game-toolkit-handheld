@@ -1,11 +1,13 @@
 [package]
 name = "game-toolkit-handheld-esp32s3"
 description = "ESP32-S3 + ILI9341 backend for game-toolkit-handheld: run any Rgb565 HandheldGame on a 320x240 SPI panel"
-version = "0.1.0"
+version = "0.1.0-alpha.1"
 edition = "2024"
 license = "EUPL-1.2"
 repository = "https://github.com/sunsided/game-toolkit-handheld"
 readme = "README.md"
+# docs.rs can't build Xtensa targets; the README is the documentation.
+documentation = "https://github.com/sunsided/game-toolkit-handheld/tree/main/boards/esp32s3"
 keywords = ["esp32s3", "ili9341", "handheld", "game", "embedded"]
 categories = ["embedded", "game-development", "no-std"]
 

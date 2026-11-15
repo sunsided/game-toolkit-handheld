@@ -1,8 +1,10 @@
 # game-toolkit-handheld-esp32s3
 
-Runs a [game-toolkit-handheld](../../crates/handheld) game on an ESP32-S3 with an ILI9341
+Runs a [game-toolkit-handheld](https://crates.io/crates/game-toolkit-handheld) game on an ESP32-S3 with an ILI9341
 320x240 SPI panel and six buttons, on bare-metal [esp-hal](https://crates.io/crates/esp-hal)
 (`no_std`, no RTOS).
+
+> **Alpha:** this has run in Wokwi but not yet on a real ESP32-S3.
 
 The wiring is fixed. Build the board to match it:
 
