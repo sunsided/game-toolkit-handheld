@@ -1,0 +1,13 @@
+[env]
+# playdate-sys bundles bindings up to SDK 2.6.2; newer ones need bindgen plus the ARM GNU
+# toolchain. The SDK's C API only grows at the end of its structs, so 2.6.2 bindings run on 3.x.
+IGNORE_EXISTING_PLAYDATE_SDK = "1"
+
+# Device: a PIC ELF with relocations kept, which pdc turns into pdex.bin.
+[target.thumbv7em-none-eabihf]
+rustflags = [
+    "-Crelocation-model=pic",
+    "-Clink-arg=--emit-relocs",
+    "-Clink-arg=--gc-sections",
+    "-Clink-arg=-Tdevice.x",
+]

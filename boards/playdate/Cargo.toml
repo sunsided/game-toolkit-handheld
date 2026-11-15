@@ -1,0 +1,42 @@
+[package]
+name = "board-playdate"
+description = "Playdate backend for game-toolkit-handheld"
+version = "0.1.0"
+edition = "2024"
+license = "EUPL-1.2"
+publish = false
+
+# Standalone: the Playdate SDK and the pinned nightly stay out of the root workspace.
+[workspace]
+
+[dependencies]
+game-toolkit-handheld = { path = "../../crates/handheld" }
+playdate = "0.2.6"
+
+# playdate-sys brings its own panic handler and allocator, which clash with std's test harness.
+[lib]
+test = false
+doctest = false
+
+[dev-dependencies]
+game-toolkit-handheld-demos = { path = "../../crates/demos" }
+
+[[example]]
+name = "dial"
+crate-type = ["dylib"]
+
+[lints.rust]
+# `deny`, not the workspace's `forbid`: the Playdate entry point needs `#[unsafe(no_mangle)]`
+# and the audio callback a raw-pointer slice, each behind one `#[allow]`.
+unsafe_code = "deny"
+missing_docs = "warn"
+rust_2018_idioms = { level = "warn", priority = -1 }
+unused_qualifications = "warn"
+
+[lints.clippy]
+dbg_macro = "warn"
+todo = "warn"
+manual_let_else = "warn"
+redundant_closure_for_method_calls = "warn"
+semicolon_if_nothing_returned = "warn"
+uninlined_format_args = "warn"

@@ -1,0 +1,6 @@
+name=Dial
+author=Markus Mayer
+description=game-toolkit-handheld crank dial demo
+bundleID=dev.sunside.handheld.dial
+version=0.1.0
+buildNumber=1
