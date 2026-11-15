@@ -178,8 +178,13 @@ tasks:
   kode:wokwi:
     desc: Run the maze on Wokwi's ESP32-P4 with an ILI9341 stand-in, screenshot to boards/kode-dot/target/wokwi.png
     dir: boards/kode-dot
+    # Own target dir: the wokwi build has a different sdkconfig (no PSRAM), and sharing one dir
+    # would rebuild ESP-IDF on every switch between the two.
+    env:
+      CARGO_TARGET_DIR: target/wokwi
+      ESP_IDF_SDKCONFIG_DEFAULTS: sdkconfig.defaults;sdkconfig.wokwi
     vars:
-      OUT: target/riscv32imafc-esp-espidf/release
+      OUT: target/wokwi/riscv32imafc-esp-espidf/release
     cmds:
       - cargo build --release --features wokwi
       - espflash save-image --chip esp32p4 --merge --bootloader {{.OUT}}/build/bootloader.bin --partition-table {{.OUT}}/build/partition-table.bin {{.OUT}}/board-kode-dot {{.OUT}}/board-kode-dot-wokwi.bin
@@ -191,7 +196,6 @@ tasks:
     deps: [kode:build]
     prompt: Write board-kode-dot.bin to 0x1A00000 on the connected Kode Dot? (never to 0x0, that would overwrite kodeOS)
     cmds:
-      # Rebuilds the hardware image first, in case kode:wokwi left the wokwi build behind.
       - espflash write-bin 0x1A00000 target/riscv32imafc-esp-espidf/release/board-kode-dot.bin
 
   # --- Quality gate -----------------------------------------------------------------------
