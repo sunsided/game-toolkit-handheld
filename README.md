@@ -8,7 +8,7 @@ browser window.
 |--------|--------|-------|--------|
 | Simulator (game-toolkit, native + web) | any | `Rgb565`, `BinaryColor` | works |
 | ESP32-S3 + SPI panel (ILI9341), `boards/esp32s3` | 320x240 | `Rgb565` | builds; Embassy + blocking runtimes; Wokwi |
-| [Kode Dot](https://kode.diy/) (ESP32-P4), `boards/kode-dot` (library: `game-toolkit-handheld-kode-dot`) | 410x502 AMOLED (portrait) | `Rgb565` | builds (ESP-IDF 6.1, FreeRTOS); hardware untested; Wokwi stand-in |
+| [Kode Dot](https://kode.diy/) (ESP32-P4), [`boards/kode-dot`](boards/kode-dot) | 410x502 AMOLED (portrait) | `Rgb565` | builds (ESP-IDF 6.1, FreeRTOS); hardware untested; Wokwi stand-in |
 | Playdate, `boards/playdate` | 400x240 1-bit | `BinaryColor` | runs in the SDK Simulator; device build untested |
 
 ```rust,ignore
@@ -42,8 +42,29 @@ Embassy `async` task, an RTOS thread (FreeRTOS under ESP-IDF), the Playdate's up
 and the game-toolkit simulator alike. Sound is a separate `Send` `AudioSource` the game hands
 over once, so an audio interrupt, DMA task or thread owns it while the main loop owns the game.
 
-Board crates are standalone (own toolchain each); drive them through the Taskfile: `task --list`,
-`task doctor` for what is installed.
+## Boards
+
+Board crates are standalone (own toolchain each) and stay out of the root workspace; drive them
+through the Taskfile: `task --list`, `task doctor` for what is installed.
+
+The Kode Dot backend is a library, `game-toolkit-handheld-kode-dot`, that runs your own game from
+your own app crate:
+
+```rust,ignore
+fn main() {
+    game_toolkit_handheld_kode_dot::run::<MyGame>(); // any HandheldGame<Color = Rgb565>
+}
+```
+
+Its [README](boards/kode-dot/README.md) lists the ESP-IDF setup the app needs and how to flash
+without overwriting kodeOS.
+
+The other backends aren't standalone crates yet and are only used inside this repository:
+
+- **ESP32-S3** (`boards/esp32s3`): already generic (`Board::frame::<G>`), but tied to one
+  devkit + ILI9341 wiring, with no setup docs for outside apps.
+- **Playdate** (`boards/playdate`): already generic (`run::<G>` plus an entry-point macro), but
+  without setup docs for outside apps.
 
 Playdate is a registered trademark of Panic. This project is not affiliated with or endorsed by
 Panic. Kode Dot is a trademark of Kode DIY.
