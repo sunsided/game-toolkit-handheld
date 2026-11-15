@@ -8,7 +8,7 @@ browser window.
 |--------|--------|-------|--------|
 | Simulator (game-toolkit, native + web) | any | `Rgb565`, `BinaryColor` | works |
 | ESP32-S3 + SPI panel (ST7789 / ILI9341) | 320x240 | `Rgb565` | planned |
-| [Kode Dot](https://kode.diy/) (ESP32-P4) | 502x410 AMOLED | `Rgb565` | planned |
+| [Kode Dot](https://kode.diy/) (ESP32-P4) | 410x502 AMOLED (portrait) | `Rgb565` | planned |
 | Playdate | 400x240 1-bit | `BinaryColor` | planned |
 
 ```rust,ignore
