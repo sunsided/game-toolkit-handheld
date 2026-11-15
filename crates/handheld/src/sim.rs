@@ -74,6 +74,17 @@ where
     G: HandheldGame,
     G::Color: SimColor,
 {
+    #[cfg(not(target_arch = "wasm32"))]
+    eprintln!(
+        "handheld simulator keys:\n  \
+         D-pad   arrows / WASD\n  \
+         A       X / Space\n  \
+         B       Z\n  \
+         Menu    Enter\n  \
+         Crank   mouse wheel / Q E\n  \
+         Touch   left mouse button\n  \
+         Quit    Esc"
+    );
     let app = AppConfig {
         title: config.title.clone(),
         width: config.screen.width * config.scale,
