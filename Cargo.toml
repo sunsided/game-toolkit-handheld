@@ -1,0 +1,38 @@
+[workspace]
+resolver = "3"
+# Board crates need their own toolchains (espup, esp-idf, Playdate SDK) and join as they land,
+# outside `default-members`.
+members = ["crates/handheld"]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2024"
+license = "EUPL-1.2"
+repository = "https://github.com/sunsided/game-toolkit-handheld"
+homepage = "https://github.com/sunsided/game-toolkit-handheld"
+authors = ["Markus Mayer"]
+rust-version = "1.95"
+
+[workspace.lints.rust]
+unsafe_code = "forbid"
+missing_docs = "warn"
+rust_2018_idioms = { level = "warn", priority = -1 }
+unused_qualifications = "warn"
+
+[workspace.lints.clippy]
+dbg_macro = "warn"
+todo = "warn"
+manual_let_else = "warn"
+redundant_closure_for_method_calls = "warn"
+semicolon_if_nothing_returned = "warn"
+uninlined_format_args = "warn"
+
+[workspace.dependencies]
+embedded-graphics = "0.8"
+game-toolkit = "0.11"
+env_logger = "0.11"
+log = "0.4"
+
+# Examples and debug builds: optimize dependencies so the demos run at full speed.
+[profile.dev.package."*"]
+opt-level = 3

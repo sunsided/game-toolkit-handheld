@@ -1,0 +1,41 @@
+version: '3'
+
+tasks:
+  default:
+    cmds:
+      - task --list
+    silent: true
+
+  test:
+    desc: Run tests and doctests
+    cmds:
+      - cargo test --workspace --locked {{.CLI_ARGS}}
+
+  check:
+    desc: Format check, clippy (host, no_std, wasm32) and docs
+    cmds:
+      - cargo fmt --all --check
+      - cargo clippy --workspace --all-targets --all-features --locked -- -D warnings
+      - cargo clippy -p game-toolkit-handheld --lib --target thumbv7em-none-eabihf --locked -- -D warnings
+      - cargo clippy --target wasm32-unknown-unknown -p game-toolkit-handheld --all-targets --all-features --locked -- -D warnings
+      - task: docs
+
+  docs:
+    desc: Build documentation with warnings denied
+    env:
+      RUSTDOCFLAGS: '-D warnings'
+    cmds:
+      - cargo doc --workspace --all-features --no-deps --locked
+
+  ci:
+    desc: Run checks and tests
+    cmds:
+      - task: check
+      - task: test
+
+  run:
+    desc: Run an example in the simulator (EXAMPLE=maze|crank)
+    vars:
+      EXAMPLE: '{{.EXAMPLE | default "maze"}}'
+    cmds:
+      - cargo run --all-features --example {{.EXAMPLE}}
